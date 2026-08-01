@@ -198,7 +198,10 @@ extension LinkuSignalProtocolStore: KyberPreKeyStore {
 
 // MARK: - SessionStore
 
-extension LinkuSignalProtocolStore: SessionStore {
+// 显式写 LibSignalClient.SessionStore——这个 App 自己也有一个叫 SessionStore 的类
+// （Storage/SessionStore.swift，管登录态），同名不同东西，不加模块前缀 Swift 会优先解析到
+// 本模块自己的那个类，"inheritance from non-protocol type" 就是因为这样把协议名解析成了类名。
+extension LinkuSignalProtocolStore: LibSignalClient.SessionStore {
     func loadSession(for address: ProtocolAddress, context: StoreContext) throws -> SessionRecord? {
         guard let raw = keyStore.read(userId: userId, suffix: sessionSuffix(address)) else { return nil }
         return try SessionRecord(bytes: unb64(raw))

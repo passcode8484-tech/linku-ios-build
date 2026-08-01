@@ -1,3 +1,4 @@
+import Combine
 import Network
 
 /// 对应 android ChatThreadViewModel.isOnWifi()（用 ConnectivityManager 查当前网络能力）——
