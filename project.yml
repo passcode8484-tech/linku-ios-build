@@ -1,0 +1,72 @@
+name: LinkU
+options:
+  bundleIdPrefix: com.linku
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+configs:
+  Debug: debug
+  Release: release
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    ENABLE_PREVIEWS: YES
+    # 故意不开 strict concurrency checking：整个工程还没有为 Swift 6 严格 Sendable 审计过
+    # （比如 JSONDecoder/JSONEncoder 不是 Sendable），开了在 Xcode 里会变成一堆编译错误。
+packages:
+  LiveKit:
+    url: https://github.com/livekit/client-sdk-swift.git
+    exact: "2.15.2"
+  WalletCore:
+    url: https://github.com/trustwallet/wallet-core.git
+    exact: "4.7.0"
+targets:
+  LinkU:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: LinkU
+    dependencies:
+      - package: LiveKit
+      - package: WalletCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.linku.ios
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
+    info:
+      path: LinkU/Info.plist
+      properties:
+        CFBundleDisplayName: LinkU
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        ITSAppUsesNonExemptEncryption: false
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        NSCameraUsageDescription: "扫描二维码添加好友/加入群聊需要使用相机"
+        NSPhotoLibraryUsageDescription: "从相册选择二维码图片识别需要访问相册"
+        NSPhotoLibraryAddUsageDescription: "开启「自动保存媒体到相册」后，需要写入相册的权限"
+        NSMicrophoneUsageDescription: "发送语音消息、进行语音/视频通话需要使用麦克风"
+        NSFaceIDUsageDescription: "查看钱包助记词等敏感信息前需要验证身份"
+        UIBackgroundModes:
+          - remote-notification
+          - voip
+    entitlements:
+      path: LinkU/LinkU.entitlements
+      properties:
+        aps-environment: development
+schemes:
+  LinkU:
+    build:
+      targets:
+        LinkU: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+    test:
+      config: Debug
