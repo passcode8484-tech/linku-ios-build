@@ -17,10 +17,10 @@ settings:
 packages:
   LiveKit:
     url: https://github.com/livekit/client-sdk-swift.git
-    exact: "2.15.2"
+    exactVersion: "2.15.2"
   WalletCore:
     url: https://github.com/trustwallet/wallet-core.git
-    exact: "4.7.0"
+    exactVersion: "4.7.0"
 targets:
   LinkU:
     type: application
