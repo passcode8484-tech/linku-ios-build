@@ -12,6 +12,11 @@ settings:
   base:
     SWIFT_VERSION: "5.10"
     ENABLE_PREVIEWS: YES
+    # LibSignalClient 的 SignalFfi 模块跟新版 Xcode 默认打开的 "Explicitly Built Modules" 合不来
+    # （报 "unable to resolve module dependency: 'SignalFfi'"）——Podfile 里对 Pods 那边的 target
+    # 也关了同样两个 key，两边都要关，这个错误出在 app target 引用 Pods 模块的边界上，只关一边不够。
+    CLANG_ENABLE_EXPLICIT_MODULES: NO
+    SWIFT_ENABLE_EXPLICIT_MODULES: NO
     # 故意不开 strict concurrency checking：整个工程还没有为 Swift 6 严格 Sendable 审计过
     # （比如 JSONDecoder/JSONEncoder 不是 Sendable），开了在 Xcode 里会变成一堆编译错误。
 packages:

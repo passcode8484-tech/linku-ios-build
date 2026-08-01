@@ -19,3 +19,17 @@ target 'LinkU' do
   # LinkU/ 目录（这一步只有你能做，我这边没有 Firebase 项目的访问权限），详见 README.md。
   pod 'FirebaseMessaging'
 end
+
+# Xcode 新版本默认开的 "Explicitly Built Modules" 跟 LibSignalClient 那个 SignalFfi
+# 模块（Rust 编的静态库、没有自己的 module map）合不来，编译报 "unable to resolve module
+# dependency: 'SignalFfi'"——不是我们代码的问题，是 CocoaPods 生成的 Pods 工程默认继承了这个
+# 新特性。显式关掉，Pods 里所有 target 和最外层 app target（project.yml 那边也设了同样两个 key）
+# 都要关，只关一边不够——错误发生在 LinkU 这个 app target 引用 Pods 里 SignalFfi 模块的边界上。
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['CLANG_ENABLE_EXPLICIT_MODULES'] = 'NO'
+      config.build_settings['SWIFT_ENABLE_EXPLICIT_MODULES'] = 'NO'
+    end
+  end
+end
