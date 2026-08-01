@@ -10,11 +10,20 @@ final class QrCaptureViewController: UIViewController, AVCaptureMetadataOutputOb
 
     private let session = AVCaptureSession()
     private var didEmit = false
+    private var previewLayer: AVCaptureVideoPreviewLayer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
         configureSession()
+    }
+
+    /// CALayer.autoresizingMask 在 iOS 上不可用（那是 macOS 独有的 API）——sublayer 跟着 view
+    /// 尺寸变化（转屏之类）走这个生命周期回调手动同步 frame，是 iOS 上摆放手动加的 sublayer
+    /// 的标准做法。
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        previewLayer?.frame = view.bounds
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -49,8 +58,8 @@ final class QrCaptureViewController: UIViewController, AVCaptureMetadataOutputOb
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.videoGravity = .resizeAspectFill
         previewLayer.frame = view.bounds
-        previewLayer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
         view.layer.addSublayer(previewLayer)
+        self.previewLayer = previewLayer
     }
 
     func metadataOutput(
