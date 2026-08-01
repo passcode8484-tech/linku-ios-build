@@ -60,7 +60,10 @@ final class LoginViewModel: ObservableObject {
         } catch let ex as ApiException {
             error = ex.apiMessage
         } catch {
-            error = "网络异常，请稍后重试"
+            // 不带 catch let 的 catch 块会隐式绑一个叫 error 的本地 Error 常量，把这个类自己的
+            // @Published var error 遮住了——这里必须显式 self.error，不然编译器会认为在给那个
+            // 隐式的、不可变的 Error 常量赋值。
+            self.error = "网络异常，请稍后重试"
         }
         sendingCode = false
     }
@@ -88,7 +91,7 @@ final class LoginViewModel: ObservableObject {
         } catch let ex as ApiException {
             error = ex.apiMessage
         } catch {
-            error = "网络异常，请稍后重试"
+            self.error = "网络异常，请稍后重试"
         }
         submitting = false
     }

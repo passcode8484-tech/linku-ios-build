@@ -110,7 +110,7 @@ struct AddFriendView: View {
         } catch let ex as ApiException {
             error = ex.apiMessage
         } catch {
-            error = "网络异常，请稍后重试"
+            self.error = "网络异常，请稍后重试"
         }
         searching = false
     }
@@ -123,7 +123,7 @@ struct AddFriendView: View {
         } catch let ex as ApiException {
             error = ex.apiMessage
         } catch {
-            error = "网络异常，请稍后重试"
+            self.error = "网络异常，请稍后重试"
         }
     }
 }

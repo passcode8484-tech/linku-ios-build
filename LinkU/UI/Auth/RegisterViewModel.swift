@@ -40,7 +40,7 @@ final class RegisterViewModel: ObservableObject {
         } catch let ex as ApiException {
             error = ex.apiMessage
         } catch {
-            error = "网络异常，请稍后重试"
+            self.error = "网络异常，请稍后重试"
         }
         sendingCode = false
     }
@@ -61,7 +61,7 @@ final class RegisterViewModel: ObservableObject {
         } catch let ex as ApiException {
             error = ex.apiMessage
         } catch {
-            error = "网络异常，请稍后重试"
+            self.error = "网络异常，请稍后重试"
         }
         submitting = false
     }

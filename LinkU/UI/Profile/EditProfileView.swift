@@ -56,7 +56,7 @@ struct EditProfileView: View {
                     .disabled(savingNickname || nickname.trimmingCharacters(in: .whitespaces).isEmpty)
             }
 
-            Section("Link ID") {
+            Section {
                 HStack {
                     TextField("Link ID", text: $linkId)
                         .textInputAutocapitalization(.never)
@@ -65,6 +65,8 @@ struct EditProfileView: View {
                 }
                 Button("保存 Link ID") { Task { await saveLinkId() } }
                     .disabled(savingLinkId || linkId.trimmingCharacters(in: .whitespaces).isEmpty)
+            } header: {
+                Text("Link ID")
             } footer: {
                 Text("Link ID 是好友添加你时可以搜索到的唯一标识。")
             }

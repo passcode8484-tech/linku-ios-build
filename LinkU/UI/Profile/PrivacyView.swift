@@ -53,11 +53,13 @@ struct PrivacyView: View {
                         }
                     }
 
-                    Section("消息") {
+                    Section {
                         Toggle("发送已读回执", isOn: Binding(
                             get: { privacy.allowReadReceipt },
                             set: { update(allowReadReceipt: $0) }
                         ))
+                    } header: {
+                        Text("消息")
                     } footer: {
                         Text("关闭后，你也将无法看到对方的已读状态。")
                     }
