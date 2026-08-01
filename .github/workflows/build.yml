@@ -1,0 +1,46 @@
+name: iOS Build Check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Install CocoaPods dependencies
+        env:
+          LIBSIGNAL_FFI_PREBUILD_CHECKSUM: 66fbb653c520bbac20165f4d94d3a7af039407b451db44bb7943a4637dcee52c
+        run: pod install --repo-update
+
+      - name: Build for iOS Simulator (no code signing)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -workspace LinkU.xcworkspace \
+            -scheme LinkU \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            build 2>&1 | tee build.log
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
